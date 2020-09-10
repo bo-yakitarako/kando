@@ -1,13 +1,24 @@
-import { createSlice, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { createSlice, configureStore, getDefaultMiddleware, PayloadAction } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from './gamePlaying';
+import { domSize } from './utility';
 
 export interface IAppState {
-
+    playerX: number;
+    turnLeft: boolean;
+    moving: {
+        left: boolean;
+        right: boolean;
+    }
 }
 
 const initialState: IAppState = {
-
+    playerX: (window.innerWidth - domSize.width) / 2,
+    turnLeft: true,
+    moving: {
+        left: false,
+        right: false,
+    },
 };
 
 export const gameModule = createSlice({
@@ -19,6 +30,20 @@ export const gameModule = createSlice({
         },
         playEnd: () => {
             console.log('おわりんご');
+        },
+        moveLocation: (state, { payload }: PayloadAction<number>) => {
+            state.playerX = payload;
+        },
+        moveLeft: (state) => {
+            state.moving.left = true;
+            state.turnLeft = true;
+        },
+        moveRight: (state) => {
+            state.moving.right = true;
+            state.turnLeft = false;
+        },
+        stopPlayer: (state) => {
+            state.moving = { left: false, right: false };
         },
     },
 });
