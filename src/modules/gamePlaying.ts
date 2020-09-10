@@ -2,9 +2,10 @@ import { take, fork, cancel, delay } from 'redux-saga/effects';
 import { gameModule } from './gameCore';
 
 export function* rootSaga() {
-    while (yield take(gameModule.actions.playStart.type)) {
+    const { playStart, playEnd } = gameModule.actions;
+    while (yield take(playStart.type)) {
         const playingTask = yield fork(playGame);
-        yield take(gameModule.actions.playEnd.type);
+        yield take(playEnd.type);
         yield cancel(playingTask);
     }
 }
@@ -12,6 +13,6 @@ export function* rootSaga() {
 function* playGame() {
     while (true) {
         yield console.log('るーぷなう');
-        yield delay(500);
+        yield delay(1000);
     }
 }
